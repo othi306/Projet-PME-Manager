@@ -7,10 +7,14 @@ import {
   AlertTriangle,
   Star,
   Calendar,
-  Target
+  Target,
+  Sparkles,
+  Rocket
 } from 'lucide-react';
 import StatsCard from './StatsCard';
 import NewSaleModal from '../Sales/NewSaleModal';
+import AIInsights from '../AI/AIInsights';
+import GamificationPanel from '../Gamification/GamificationPanel';
 import { motivationalMessages } from '../../data/mockData';
 import { useDashboardStats } from '../../hooks/useDashboardStats';
 
@@ -36,7 +40,7 @@ export default function Dashboard({ onNavigate }: DashboardProps) {
     }).format(amount);
   };
 
-  const handleNewSale = (sale: any) => {
+  const handleNewSale = (sale: unknown) => {
     console.log('Nouvelle vente:', sale);
     // Ici vous pouvez ajouter la logique pour sauvegarder la vente
     // Par exemple, l'ajouter à votre état global ou l'envoyer à Supabase
@@ -148,33 +152,62 @@ export default function Dashboard({ onNavigate }: DashboardProps) {
         </div>
       </div>
 
-      {/* Actions rapides */}
-      <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
-        <h3 className="text-lg font-bold text-gray-900 mb-6">Actions rapides</h3>
+      {/* Nouvelles sections futuristes */}
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+        {/* Insights IA */}
+        <AIInsights />
+        
+        {/* Gamification */}
+        <GamificationPanel />
+      </div>
+
+      {/* Actions rapides améliorées */}
+      <div className="bg-gradient-to-br from-slate-50 to-blue-50 rounded-2xl shadow-lg p-6 border border-blue-100">
+        <div className="flex items-center gap-3 mb-6">
+          <div className="p-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl">
+            <Rocket size={24} className="text-white" />
+          </div>
+          <div>
+            <h3 className="text-lg font-bold text-gray-900">Actions rapides</h3>
+            <p className="text-sm text-gray-600">Boostez votre productivité</p>
+          </div>
+          <div className="ml-auto">
+            <Sparkles size={20} className="text-blue-500" />
+          </div>
+        </div>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <button 
             onClick={() => setShowNewSaleModal(true)}
-            className="p-4 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-xl hover:shadow-lg transition-all duration-200 transform hover:-translate-y-1"
+            className="group p-4 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-xl hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 hover:scale-105"
           >
-            <Package size={24} className="mb-2" />
-            <span className="block font-medium">Nouvelle vente</span>
+            <div className="flex items-center justify-center mb-3">
+              <Package size={28} className="group-hover:scale-110 transition-transform duration-300" />
+            </div>
+            <span className="block font-semibold text-lg">Nouvelle vente</span>
+            <span className="block text-xs opacity-90 mt-1">Enregistrer rapidement</span>
           </button>
           
           <button 
             onClick={() => onNavigate && onNavigate('customers')}
-            className="p-4 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-xl hover:shadow-lg transition-all duration-200 transform hover:-translate-y-1"
+            className="group p-4 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-xl hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 hover:scale-105"
           >
-            <Users size={24} className="mb-2" />
-            <span className="block font-medium">Ajouter client</span>
+            <div className="flex items-center justify-center mb-3">
+              <Users size={28} className="group-hover:scale-110 transition-transform duration-300" />
+            </div>
+            <span className="block font-semibold text-lg">Nouveau client</span>
+            <span className="block text-xs opacity-90 mt-1">Fidéliser et grandir</span>
           </button>
           
           <button 
             onClick={() => onNavigate && onNavigate('finance')}
-            className="p-4 bg-gradient-to-r from-purple-500 to-indigo-500 text-white rounded-xl hover:shadow-lg transition-all duration-200 transform hover:-translate-y-1"
+            className="group p-4 bg-gradient-to-r from-purple-500 to-indigo-500 text-white rounded-xl hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 hover:scale-105"
           >
-            <TrendingUp size={24} className="mb-2" />
-            <span className="block font-medium">Voir rapports</span>
+            <div className="flex items-center justify-center mb-3">
+              <TrendingUp size={28} className="group-hover:scale-110 transition-transform duration-300" />
+            </div>
+            <span className="block font-semibold text-lg">Rapports</span>
+            <span className="block text-xs opacity-90 mt-1">Analyser les performances</span>
           </button>
         </div>
       </div>
