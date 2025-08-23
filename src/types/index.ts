@@ -1,10 +1,70 @@
-export interface User {
+// Types pour les entreprises et utilisateurs
+export interface Company {
   id: string;
   name: string;
+  email?: string;
+  phone?: string;
+  address?: string;
+  siret?: string;
+  industry?: string;
+  website?: string;
+  logo_url?: string;
+  subscription_plan: 'basic' | 'premium' | 'enterprise';
+  subscription_status: 'active' | 'inactive' | 'suspended';
+  created_at: string;
+  updated_at: string;
+}
+
+export interface User {
+  id: string;
+  company_id: string;
+  name: string;
   email: string;
-  role: 'owner' | 'manager' | 'employee';
-  company: string;
+  role: 'owner' | 'admin' | 'manager' | 'employee';
+  permissions: UserPermissions;
+  is_active: boolean;
+  last_login?: string;
   avatar?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface UserPermissions {
+  sales: boolean;
+  inventory: boolean;
+  finance: boolean;
+  customers: boolean;
+  production: boolean;
+  reports: boolean;
+  settings: boolean;
+  user_management: boolean;
+}
+
+// Types pour l'authentification
+export interface AuthUser {
+  id: string;
+  email: string;
+  name: string;
+  company?: Company;
+  user_metadata?: {
+    name?: string;
+    company?: string;
+  };
+}
+
+export interface SignUpData {
+  email: string;
+  password: string;
+  name: string;
+  company_name: string;
+  company_email?: string;
+  company_phone?: string;
+  industry?: string;
+}
+
+export interface SignInData {
+  email: string;
+  password: string;
 }
 
 export interface Sale {

@@ -1,126 +1,263 @@
-# 🚀 PME Manager - Application de Gestion Futuriste
+# PME Manager - Application de Gestion d'Entreprise
 
-Une application web moderne et intuitive pour aider les petites et moyennes entreprises à **gagner du temps, réduire leur stress et améliorer leur productivité**.
+Une application complète de gestion pour les PME avec authentification multi-entreprises, gestion des utilisateurs et des rôles, et intégration Supabase.
 
-## ✨ Fonctionnalités Principales
+## 🚀 Fonctionnalités
 
-### 📊 Tableau de Bord Futuriste
-- **Statistiques en temps réel** : ventes, trésorerie, stocks, productivité
-- **Messages de motivation** personnalisés à chaque connexion
-- **Design moderne** avec animations fluides et gradients
+### 🔐 Authentification et Gestion des Entreprises
+- **Inscription d'entreprise** : Création de compte avec informations complètes de l'entreprise
+- **Authentification Google** : Connexion rapide avec Google OAuth
+- **Gestion multi-utilisateurs** : Système de rôles et permissions granulaires
+- **Sécurité avancée** : Authentification sécurisée avec Supabase
 
-### 🤖 Intelligence Artificielle Intégrée
-- **Prévisions de ventes** basées sur l'historique et les tendances
-- **Alertes intelligentes** pour les ruptures de stock
-- **Suggestions marketing** automatisées (SMS, email)
-- **Détection d'anomalies** financières
-- **Recommandations personnalisées** avec niveau de confiance
+### 👥 Gestion des Utilisateurs
+- **Rôles hiérarchiques** : Propriétaire, Administrateur, Manager, Employé
+- **Permissions personnalisables** : Contrôle d'accès par module
+- **Invitations d'équipe** : Système d'invitation par email
+- **Gestion des statuts** : Activation/désactivation des comptes
 
-### 🎮 Gamification
-- **Système de niveaux et XP** pour motiver les utilisateurs
-- **Badges d'accomplissement** (Vendeur Pro, Maître du Stock, etc.)
-- **Challenges quotidiens, hebdomadaires et mensuels**
-- **Récompenses** pour atteindre les objectifs
+### 📊 Modules de Gestion
+- **Tableau de bord** : Vue d'ensemble avec métriques clés
+- **Gestion des ventes** : Suivi des commandes et paiements
+- **Gestion des clients** : CRM intégré avec programme de fidélité
+- **Gestion des stocks** : Inventaire en temps réel avec alertes
+- **Production** : Planification et suivi de production
+- **Finances** : Comptabilité et rapports financiers
+- **Journal d'entreprise** : Suivi des activités et réflexions
 
-### 💼 Gestion Complète
-- **Point de Vente (POS)** avec enregistrement rapide des ventes
-- **Gestion des clients** avec historique et fidélisation
-- **Inventaire intelligent** avec alertes de réapprovisionnement
-- **Suivi financier** simplifié avec tableaux de bord visuels
-- **Module de production** pour les entreprises manufacturières
-- **Journal personnel** pour notes et intentions
+### ⚙️ Paramètres Avancés
+- **Informations d'entreprise** : Profil complet avec logo et coordonnées
+- **Gestion des utilisateurs** : Interface d'administration complète
+- **Sécurité** : Paramètres de sécurité et sessions
+- **Notifications** : Configuration des alertes
+- **Apparence** : Personnalisation de l'interface
+- **Données** : Sauvegarde et gestion des données
 
-### 🔔 Notifications Intelligentes
-- **Alertes stocks** en temps réel
-- **Rappels financiers** automatiques
-- **Messages de motivation** personnalisés
-- **Notifications push** pour les événements importants
+## 🛠️ Technologies
 
-## 🛠️ Technologies Utilisées
+- **Frontend** : React 18 + TypeScript + Vite
+- **Styling** : Tailwind CSS + Lucide Icons
+- **Backend** : Supabase (PostgreSQL + Auth + Storage)
+- **Authentification** : Supabase Auth + Google OAuth
+- **Base de données** : PostgreSQL avec Row Level Security (RLS)
+- **Déploiement** : Compatible Vercel, Netlify, etc.
 
-- **Frontend** : React 18 + TypeScript
-- **Styling** : Tailwind CSS avec design system moderne
-- **Icons** : Lucide React
-- **Build Tool** : Vite
-- **Backend** : Supabase (PostgreSQL)
-- **Authentification** : Supabase Auth
-- **Déploiement** : Prêt pour Vercel/Netlify
+## 📦 Installation
 
-## 🎨 Design & UX
+### Prérequis
+- Node.js 18+ 
+- npm ou yarn
+- Compte Supabase
 
-- **Style futuriste et professionnel** avec gradients et animations
-- **Interface mobile-first** responsive
-- **Maximum 2 clics** pour les actions principales
-- **Couleurs contrastées** pour l'accessibilité
-- **Animations légères** et transitions fluides
-- **Onboarding guidé** pour les nouveaux utilisateurs
+### Configuration
 
-## 🚀 Installation et Démarrage
-
+1. **Cloner le projet**
 ```bash
-# Cloner le repository
-git clone https://github.com/othi306/Projet-PME-Manager.git
-cd Projet-PME-Manager
-
-# Installer les dépendances
-npm install
-
-# Configurer les variables d'environnement
-cp .env.example .env.local
-# Remplir les variables Supabase
-
-# Démarrer en mode développement
-npm run dev
+git clone <repository-url>
+cd project
 ```
 
-## 📱 Fonctionnalités Mobile
+2. **Installer les dépendances**
+```bash
+npm install
+```
 
-- **Design responsive** optimisé pour tous les écrans
-- **Sidebar mobile** avec overlay
-- **Gestes tactiles** intuitifs
-- **Performance optimisée** pour les appareils mobiles
+3. **Configuration Supabase**
+```bash
+# Copier le fichier d'exemple
+cp .env.example .env
 
-## 🔐 Sécurité & Conformité
+# Éditer .env avec vos clés Supabase
+VITE_SUPABASE_URL=https://your-project-id.supabase.co
+VITE_SUPABASE_ANON_KEY=your-anon-key-here
+```
 
-- **Authentification sécurisée** avec Supabase
-- **Chiffrement des données** en transit et au repos
-- **Conformité RGPD** intégrée
-- **Sauvegarde automatique** des données
+4. **Configurer la base de données**
+```bash
+# Exécuter les migrations dans l'ordre
+# 1. Migrations existantes (déjà présentes)
+# 2. Migration des entreprises et utilisateurs
+```
 
-## 🎯 Public Cible
+5. **Configurer Google OAuth (optionnel)**
+- Aller dans le dashboard Supabase > Authentication > Providers
+- Activer Google et configurer les clés OAuth
 
-- **Dirigeants de PME** (18-60 ans)
-- **Secteurs** : boulangeries, salons de beauté, boucheries, menuiseries, etc.
-- **Utilisateurs peu technophiles** → interface simple et rassurante
-- **Besoin de centralisation** et de mobilité
+### Démarrage
 
-## 💰 Modèle Économique
+```bash
+# Mode développement
+npm run dev
 
-- **Freemium** : fonctionnalités de base gratuites
-- **Premium** : IA, gamification, multi-utilisateurs, exports avancés
-- **Abonnements modulables** mensuels/annuels
+# Build de production
+npm run build
 
-## 🔄 Mises à Jour Récentes
+# Aperçu de production
+npm run preview
+```
 
-### Version 2.0 - Édition Futuriste
-- ✅ **Nouveau design futuriste** avec animations avancées
-- ✅ **Module IA intégré** avec prédictions et recommandations
-- ✅ **Système de gamification** complet
-- ✅ **Écran de chargement** amélioré avec particules
-- ✅ **Actions rapides** redesignées avec effets hover
-- ✅ **Messages motivationnels** dynamiques
-- ✅ **Performance optimisée** pour une expérience fluide
+## 🗄️ Structure de la Base de Données
 
-## 📞 Support
+### Tables Principales
 
-- **Documentation** : Consultez ce README
-- **Issues** : Utilisez GitHub Issues pour signaler des bugs
-- **Contributions** : Les pull requests sont les bienvenues !
+#### `companies`
+- Informations des entreprises
+- Abonnements et statuts
+- Données de contact et légales
+
+#### `users`
+- Utilisateurs liés aux entreprises
+- Rôles et permissions
+- Statuts d'activation
+
+#### Tables Métier
+- `clients` : Gestion des clients
+- `products` : Catalogue produits
+- `sales` : Transactions de vente
+- `finance` : Opérations financières
+- `journal` : Entrées de journal
+- `production_*` : Modules de production
+- `suppliers_*` : Gestion fournisseurs
+
+### Sécurité (RLS)
+- Isolation des données par entreprise
+- Contrôle d'accès basé sur les rôles
+- Politiques de sécurité granulaires
+
+## 👤 Système de Rôles
+
+### Propriétaire (Owner)
+- Accès complet à toutes les fonctionnalités
+- Gestion des utilisateurs et permissions
+- Configuration de l'entreprise
+
+### Administrateur (Admin)
+- Accès à la plupart des modules
+- Gestion des utilisateurs (sauf propriétaire)
+- Rapports et paramètres
+
+### Manager
+- Gestion opérationnelle
+- Accès aux ventes, stock, production
+- Rapports limités
+
+### Employé (Employee)
+- Accès de base aux ventes et clients
+- Fonctionnalités limitées selon permissions
+
+## 🔧 Configuration Avancée
+
+### Variables d'Environnement
+```env
+# Supabase
+VITE_SUPABASE_URL=your-supabase-url
+VITE_SUPABASE_ANON_KEY=your-anon-key
+
+# Application
+VITE_APP_NAME="PME Manager"
+VITE_APP_VERSION="1.0.0"
+NODE_ENV=development
+```
+
+### Personnalisation
+- Thèmes et couleurs dans `tailwind.config.js`
+- Configuration des modules dans `src/types/index.ts`
+- Permissions personnalisées dans `UserPermissions`
+
+## 📱 Fonctionnalités Mobiles
+- Interface responsive
+- Navigation mobile optimisée
+- Sidebar collapsible
+- Touch-friendly
+
+## 🔒 Sécurité
+
+### Authentification
+- Mots de passe sécurisés avec validation
+- Authentification à deux facteurs (2FA) prête
+- Sessions sécurisées avec Supabase
+
+### Protection des Données
+- Chiffrement en transit et au repos
+- Isolation des données par entreprise
+- Audit trail des modifications
+
+### Conformité
+- RGPD ready
+- Sauvegarde et export des données
+- Suppression sécurisée des comptes
+
+## 🚀 Déploiement
+
+### Vercel (Recommandé)
+```bash
+# Installation Vercel CLI
+npm i -g vercel
+
+# Déploiement
+vercel
+
+# Configuration des variables d'environnement dans le dashboard Vercel
+```
+
+### Netlify
+```bash
+# Build
+npm run build
+
+# Déployer le dossier dist/
+```
+
+### Docker
+```dockerfile
+FROM node:18-alpine
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --only=production
+COPY . .
+RUN npm run build
+EXPOSE 3000
+CMD ["npm", "run", "preview"]
+```
+
+## 🤝 Contribution
+
+1. Fork le projet
+2. Créer une branche feature (`git checkout -b feature/AmazingFeature`)
+3. Commit les changements (`git commit -m 'Add AmazingFeature'`)
+4. Push vers la branche (`git push origin feature/AmazingFeature`)
+5. Ouvrir une Pull Request
 
 ## 📄 Licence
 
 Ce projet est sous licence MIT. Voir le fichier `LICENSE` pour plus de détails.
 
+## 🆘 Support
+
+- **Documentation** : Consultez ce README et les commentaires dans le code
+- **Issues** : Utilisez les GitHub Issues pour signaler des bugs
+- **Discussions** : GitHub Discussions pour les questions générales
+
+## 🗺️ Roadmap
+
+### Version 1.1
+- [ ] Notifications push
+- [ ] API REST complète
+- [ ] Module de facturation avancé
+- [ ] Rapports personnalisables
+
+### Version 1.2
+- [ ] Application mobile (React Native)
+- [ ] Intégrations tierces (comptabilité, CRM)
+- [ ] IA pour recommandations business
+- [ ] Mode hors ligne
+
+### Version 2.0
+- [ ] Multi-devises
+- [ ] Multi-langues
+- [ ] Marketplace d'extensions
+- [ ] Analytics avancés
+
 ---
 
-**PME Manager** - *Votre succès commence ici* ✨
+**PME Manager** - Simplifiez la gestion de votre entreprise avec une solution moderne et sécurisée.

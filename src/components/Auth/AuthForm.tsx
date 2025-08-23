@@ -20,7 +20,7 @@ export default function AuthForm() {
   const [isBlocked, setIsBlocked] = useState(false);
   const [blockTimeLeft, setBlockTimeLeft] = useState(0);
 
-  const { signIn, signUp, signInWithGoogle } = useAuth();
+  const { signIn, signUpWithCompany, signInWithGoogle } = useAuth();
 
   // Validation de sécurité du mot de passe
   const validatePassword = (password: string) => {
@@ -101,9 +101,11 @@ export default function AuthForm() {
           throw new Error('Le nom et l\'entreprise sont obligatoires');
         }
         
-        const { error } = await signUp(formData.email, formData.password, {
+        const { error } = await signUpWithCompany({
+          email: formData.email,
+          password: formData.password,
           name: formData.name,
-          company: formData.company
+          company_name: formData.company
         });
         
         if (error) throw error;
@@ -111,28 +113,33 @@ export default function AuthForm() {
         setSuccess('Compte créé avec succès ! Vérifiez votre email pour confirmer votre compte.');
         setAttempts(0); // Reset attempts on success
       } else {
-        const { error } = await signIn(formData.email, formData.password);
+        const { error } = await signIn({
+          email: formData.email,
+          password: formData.password
+        });
         if (error) throw error;
         
         setSuccess('Connexion réussie ! Redirection...');
         setAttempts(0); // Reset attempts on success
       }
-    } catch (error: any) {
-      console.error('Erreur d\'authentification:', error);
+    } catch (err) {
+      console.error('Erreur d\'authentification:', err);
       
       let errorMessage = 'Une erreur est survenue';
       
-      if (error.message === 'Invalid login credentials') {
-        errorMessage = 'Email ou mot de passe incorrect';
-        handleFailedAttempt();
-      } else if (error.message === 'Email not confirmed') {
-        errorMessage = 'Veuillez confirmer votre email avant de vous connecter';
-      } else if (error.message === 'User already registered') {
-        errorMessage = 'Un compte existe déjà avec cet email';
-      } else if (error.message.includes('Password')) {
-        errorMessage = 'Mot de passe trop faible';
-      } else {
-        errorMessage = error.message;
+      if (err instanceof Error) {
+        if (err.message === 'Invalid login credentials') {
+          errorMessage = 'Email ou mot de passe incorrect';
+          handleFailedAttempt();
+        } else if (err.message === 'Email not confirmed') {
+          errorMessage = 'Veuillez confirmer votre email avant de vous connecter';
+        } else if (err.message === 'User already registered') {
+          errorMessage = 'Un compte existe déjà avec cet email';
+        } else if (err.message.includes('Password')) {
+          errorMessage = 'Mot de passe trop faible';
+        } else {
+          errorMessage = err.message;
+        }
       }
       
       setError(errorMessage);
@@ -151,8 +158,8 @@ export default function AuthForm() {
       const { error } = await signInWithGoogle();
       if (error) throw error;
       setAttempts(0); // Reset attempts on success
-    } catch (error: any) {
-      console.error('Erreur Google Auth:', error);
+    } catch (err) {
+      console.error('Erreur Google Auth:', err);
       setError('Erreur lors de la connexion avec Google');
     } finally {
       setLoading(false);

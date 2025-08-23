@@ -19,12 +19,98 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
 export interface Database {
   public: {
     Tables: {
+      companies: {
+        Row: {
+          id: string;
+          name: string;
+          email: string | null;
+          phone: string | null;
+          address: string | null;
+          siret: string | null;
+          industry: string | null;
+          website: string | null;
+          logo_url: string | null;
+          subscription_plan: string;
+          subscription_status: string;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          name: string;
+          email?: string | null;
+          phone?: string | null;
+          address?: string | null;
+          siret?: string | null;
+          industry?: string | null;
+          website?: string | null;
+          logo_url?: string | null;
+          subscription_plan?: string;
+          subscription_status?: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          name?: string;
+          email?: string | null;
+          phone?: string | null;
+          address?: string | null;
+          siret?: string | null;
+          industry?: string | null;
+          website?: string | null;
+          logo_url?: string | null;
+          subscription_plan?: string;
+          subscription_status?: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
+      users: {
+        Row: {
+          id: string;
+          company_id: string;
+          email: string;
+          name: string;
+          role: string;
+          permissions: Record<string, boolean>;
+          is_active: boolean;
+          last_login: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id: string;
+          company_id: string;
+          email: string;
+          name: string;
+          role?: string;
+          permissions?: Record<string, boolean>;
+          is_active?: boolean;
+          last_login?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          company_id?: string;
+          email?: string;
+          name?: string;
+          role?: string;
+          permissions?: Record<string, boolean>;
+          is_active?: boolean;
+          last_login?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
       profiles: {
         Row: {
           id: string;
           email: string;
           name: string;
           company: string;
+          company_id: string | null;
           created_at: string;
           updated_at: string;
         };
@@ -33,6 +119,7 @@ export interface Database {
           email: string;
           name: string;
           company: string;
+          company_id?: string | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -41,6 +128,7 @@ export interface Database {
           email?: string;
           name?: string;
           company?: string;
+          company_id?: string | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -56,6 +144,7 @@ export interface Database {
           total_purchases: number;
           last_purchase: string | null;
           user_id: string;
+          company_id: string | null;
           created_at: string;
           updated_at: string;
         };
@@ -69,6 +158,7 @@ export interface Database {
           total_purchases?: number;
           last_purchase?: string | null;
           user_id: string;
+          company_id?: string | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -82,6 +172,7 @@ export interface Database {
           total_purchases?: number;
           last_purchase?: string | null;
           user_id?: string;
+          company_id?: string | null;
           created_at?: string;
           updated_at?: string;
         };

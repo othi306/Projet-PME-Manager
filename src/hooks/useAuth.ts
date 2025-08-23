@@ -1,123 +1,168 @@
 import { useState, useEffect } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '../lib/supabase';
+import { SignUpData, SignInData, Company, User as AppUser } from '../types';
 
 export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
+  const [appUser, setAppUser] = useState<AppUser | null>(null);
+  const [company, setCompany] = useState<Company | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let isMounted = true;
-    
-    // TEMPORARY: Mock user for testing
-    const mockUser = {
-      id: 'test-user-id',
-      email: 'test@example.com',
-      user_metadata: { name: 'Test User', company: 'Test PME' },
-      app_metadata: {},
-      aud: 'authenticated',
-      created_at: new Date().toISOString()
-    } as User;
-    
-    const mockSession = {
-      user: mockUser,
-      access_token: 'mock-token'
-    } as Session;
-    
-    setTimeout(() => {
-      if (isMounted) {
-        setSession(mockSession);
-        setUser(mockUser);
+
+    // Récupérer la session actuelle
+    const getSession = async () => {
+      try {
+        const { data: { session }, error } = await supabase.auth.getSession();
+        
+        if (error) {
+          console.error('Error getting session:', error);
+          return;
+        }
+
+        if (session && isMounted) {
+          setSession(session);
+          setUser(session.user);
+          await loadUserData(session.user.id);
+        }
+      } catch (error) {
+        console.error('Error in getSession:', error);
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
+    };
+
+    getSession();
+
+    // Écouter les changements d'authentification
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        if (!isMounted) return;
+
+        console.log('Auth state changed:', event, session?.user?.email);
+        
+        setSession(session);
+        setUser(session?.user ?? null);
+        
+        if (session?.user) {
+          await loadUserData(session.user.id);
+        } else {
+          setAppUser(null);
+          setCompany(null);
+        }
+        
         setLoading(false);
       }
-    }, 100);
-    
+    );
+
     return () => {
       isMounted = false;
+      subscription.unsubscribe();
     };
   }, []);
 
-  const initializeUserData = async (user: User) => {
-    if (!user?.id) return;
-    
+  const loadUserData = async (userId: string) => {
     try {
-      console.log('Initializing user data for:', user.id);
-      
-      // Check if user already exists
-      const { data: existingUser } = await supabase
+      // Charger les données utilisateur
+      const { data: userData, error: userError } = await supabase
         .from('users')
-        .select('id')
-        .eq('id', user.id)
+        .select('*')
+        .eq('id', userId)
         .single();
 
-      if (existingUser) {
-        console.log('User already exists, skipping initialization');
+      if (userError && userError.code !== 'PGRST116') {
+        console.error('Error loading user data:', userError);
         return;
       }
 
-      // Create user profile
-      const { error: profileError } = await supabase
-        .from('users')
-        .insert([
-          {
-            id: user.id,
-            email: user.email || '',
-            name: user.user_metadata?.name || '',
-            company: user.user_metadata?.company || '',
-            role: 'admin'
-          }
-        ]);
+      if (userData) {
+        setAppUser(userData);
+        
+        // Charger les données de l'entreprise
+        const { data: companyData, error: companyError } = await supabase
+          .from('companies')
+          .select('*')
+          .eq('id', userData.company_id)
+          .single();
 
-      if (profileError && profileError.code !== '23505') { // Ignore duplicate key error
-        console.error('Error creating user profile:', profileError);
-        return;
+        if (companyError && companyError.code !== 'PGRST116') {
+          console.error('Error loading company data:', companyError);
+          return;
+        }
+
+        if (companyData) {
+          setCompany(companyData);
+        }
       }
-
-      // Initialize empty data for all tables
-      const initPromises = [
-        // Initialize clients table (empty)
-        supabase.from('clients').select('id').eq('user_id', user.id).limit(1),
-        
-        // Initialize products table (empty)
-        supabase.from('products').select('id').eq('user_id', user.id).limit(1),
-        
-        // Initialize sales table (empty)
-        supabase.from('sales').select('id').eq('user_id', user.id).limit(1),
-        
-        // Initialize finance table (empty)
-        supabase.from('finance').select('id').eq('user_id', user.id).limit(1),
-        
-        // Initialize journal table (empty)
-        supabase.from('journal').select('id').eq('user_id', user.id).limit(1),
-      ];
-
-      await Promise.allSettled(initPromises);
-      console.log('User data initialized successfully');
-      
     } catch (error) {
-      console.error('Error initializing user data:', error);
+      console.error('Error in loadUserData:', error);
     }
   };
 
-  const signUp = async (email: string, password: string, userData: { name: string; company: string }) => {
-    // Validation côté client supplémentaire
-    if (password.length < 8) {
-      return { data: null, error: { message: 'Le mot de passe doit contenir au moins 8 caractères' } };
-    }
-    
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: userData,
-        emailRedirectTo: `${window.location.origin}/auth/callback`
+
+  const signUpWithCompany = async (signUpData: SignUpData) => {
+    try {
+      // Validation côté client
+      if (signUpData.password.length < 8) {
+        return { data: null, error: { message: 'Le mot de passe doit contenir au moins 8 caractères' } };
       }
-    });
-    return { data, error };
+
+      // Créer le compte utilisateur
+      const { data: authData, error: authError } = await supabase.auth.signUp({
+        email: signUpData.email,
+        password: signUpData.password,
+        options: {
+          data: {
+            name: signUpData.name,
+            company_name: signUpData.company_name
+          }
+        }
+      });
+
+      if (authError) {
+        return { data: null, error: authError };
+      }
+
+      if (authData.user) {
+        // Utiliser la fonction PostgreSQL pour créer l'entreprise et l'utilisateur
+        const { data: companyData, error: companyError } = await supabase
+          .rpc('create_company_with_user', {
+            company_name: signUpData.company_name,
+            user_email: signUpData.company_email || signUpData.email,
+            user_name: signUpData.name,
+            user_auth_id: authData.user.id
+          });
+
+        if (companyError) {
+          console.error('Error creating company:', companyError);
+          return { data: authData, error: companyError };
+        }
+
+        // Mettre à jour les données de l'entreprise si des informations supplémentaires sont fournies
+        if (signUpData.company_phone || signUpData.industry) {
+          await supabase
+            .from('companies')
+            .update({
+              phone: signUpData.company_phone,
+              industry: signUpData.industry
+            })
+            .eq('id', companyData);
+        }
+      }
+
+      return { data: authData, error: null };
+    } catch (error) {
+      console.error('Error in signUpWithCompany:', error);
+      return { data: null, error: { message: 'Erreur lors de la création du compte' } };
+    }
   };
 
-  const signIn = async (email: string, password: string) => {
+  const signIn = async (signInData: SignInData) => {
     // Rate limiting côté client
     const lastAttempt = localStorage.getItem('lastLoginAttempt');
     const now = Date.now();
@@ -129,8 +174,8 @@ export function useAuth() {
     localStorage.setItem('lastLoginAttempt', now.toString());
     
     const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
+      email: signInData.email,
+      password: signInData.password,
     });
     
     // Nettoyer le rate limiting en cas de succès
@@ -159,10 +204,13 @@ export function useAuth() {
   return {
     user,
     session,
+    appUser,
+    company,
     loading,
-    signUp,
+    signUpWithCompany,
     signIn,
     signInWithGoogle,
     signOut,
+    loadUserData,
   };
 }

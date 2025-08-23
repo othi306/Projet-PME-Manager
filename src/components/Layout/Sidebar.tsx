@@ -11,7 +11,6 @@ import {
   LogOut,
   Factory
 } from 'lucide-react';
-import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 import NotificationsPanel from './NotificationsPanel';
 import SettingsPanel from './SettingsPanel';
@@ -72,17 +71,18 @@ export default function Sidebar({ activeTab, onTabChange, isCollapsed, onToggleC
 
               return (
                 <li key={item.id}>
-                  <Link
-                    to={`/${item.id}`}
+                  <button
                     onClick={() => onTabChange(item.id)}
                     className={classNames(
-                      'group flex items-center px-3 py-2 text-sm font-medium rounded-md',
-                      isActive ? 'bg-gray-200 text-gray-900' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
+                      'w-full flex items-center gap-3 p-3 rounded-xl transition-all duration-200',
+                      isActive 
+                        ? 'bg-blue-600 text-white shadow-lg' 
+                        : 'text-slate-300 hover:bg-slate-700 hover:text-white'
                     )}
                   >
-                    <Icon size={16} className="mr-2" />
-                    {item.label}
-                  </Link>
+                    <Icon size={20} />
+                    {!isCollapsed && <span className="font-medium">{item.label}</span>}
+                  </button>
                 </li>
               );
             })}
@@ -100,7 +100,7 @@ export default function Sidebar({ activeTab, onTabChange, isCollapsed, onToggleC
               {!isCollapsed && <span className="text-slate-300">Notifications</span>}
             </button>
             <button
-              onClick={() => setShowSettings(true)}
+              onClick={() => onTabChange('settings')}
               className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-slate-700 transition-all duration-200"
             >
               <Settings size={20} className="text-slate-300" />

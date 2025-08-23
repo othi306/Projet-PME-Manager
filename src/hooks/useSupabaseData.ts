@@ -2,10 +2,14 @@ import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from './useAuth';
 
-export function useSupabaseData<T>(
+interface WithId {
+  id: string;
+}
+
+export function useSupabaseData<T extends WithId>(
   table: string,
   select: string = '*',
-  dependencies: any[] = []
+  dependencies: unknown[] = []
 ) {
   const [data, setData] = useState<T[]>([]);
   const [loading, setLoading] = useState(true);
@@ -27,9 +31,10 @@ export function useSupabaseData<T>(
           .select(select);
 
         if (error) throw error;
-        setData(result || []);
-      } catch (error: any) {
-        setError(error.message);
+        setData((result as unknown as T[]) || []);
+      } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : 'Une erreur est survenue';
+        setError(errorMessage);
       } finally {
         setLoading(false);
       }
@@ -49,8 +54,9 @@ export function useSupabaseData<T>(
       if (error) throw error;
       setData(prev => [result, ...prev]);
       return { data: result, error: null };
-    } catch (error: any) {
-      return { data: null, error: error.message };
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Une erreur est survenue';
+      return { data: null, error: errorMessage };
     }
   };
 
@@ -65,11 +71,12 @@ export function useSupabaseData<T>(
 
       if (error) throw error;
       setData(prev => prev.map(item => 
-        (item as any).id === id ? result : item
+        item.id === id ? result : item
       ));
       return { data: result, error: null };
-    } catch (error: any) {
-      return { data: null, error: error.message };
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Une erreur est survenue';
+      return { data: null, error: errorMessage };
     }
   };
 
@@ -81,10 +88,11 @@ export function useSupabaseData<T>(
         .eq('id', id);
 
       if (error) throw error;
-      setData(prev => prev.filter(item => (item as any).id !== id));
+      setData(prev => prev.filter(item => item.id !== id));
       return { error: null };
-    } catch (error: any) {
-      return { error: error.message };
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Une erreur est survenue';
+      return { error: errorMessage };
     }
   };
 

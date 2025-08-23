@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from './hooks/useAuth';
-import AuthForm from './components/Auth/AuthForm';
+import { AuthContainer } from './components/Auth/AuthContainer';
 import Sidebar from './components/Layout/Sidebar';
 import Header from './components/Layout/Header';
 import Dashboard from './components/Dashboard/Dashboard';
@@ -10,6 +10,7 @@ import InventoryManager from './components/Inventory/InventoryManager';
 import FinanceManager from './components/Finance/FinanceManager';
 import JournalManager from './components/Journal/JournalManager';
 import ProductionManager from './components/Production/ProductionManager';
+import { SettingsPanel } from './components/Settings/SettingsPanel';
 import { NotificationProvider } from './context/NotificationContext';
 import NotificationsPanel from './components/Layout/NotificationsPanel';
 
@@ -77,7 +78,7 @@ function App() {
   }
 
   if (!user) {
-    return <AuthForm />;
+    return <AuthContainer />;
   }
 
   const renderContent = () => {
@@ -96,6 +97,8 @@ function App() {
         return <FinanceManager />;
       case 'journal':
         return <JournalManager />;
+      case 'settings':
+        return <SettingsPanel />;
       default:
         return <Dashboard onNavigate={setActiveTab} />;
     }
